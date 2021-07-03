@@ -1,5 +1,6 @@
 const passwordValidator = require('password-validator');
 const argon2 = require('argon2');
+const bpcrypt = require('bcrypt');
 
 exports.validatePassword = (password) => {
     
@@ -18,8 +19,14 @@ exports.validatePassword = (password) => {
     return schema.validate(password, {list: true}); // {list: true} returns all the rules that were failed.
 }
 
-exports.hashPassword = (password) => {
-    
+exports.hashPassword = async (password) => {
+    try {
+        var hash = await bpcrypt.hash(password, 10);
+        return hash;
+    }
+    catch(error) {
+        return error;
+    }
 }
 
 

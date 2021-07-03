@@ -1,4 +1,4 @@
-const { validatePassword } = require('../../util/password.util');
+const { validatePassword, hashPassword } = require('../../util/password.util');
 const user = require('./user.model');
 
 exports.signUp = async (request, response, next) => {
@@ -10,6 +10,7 @@ exports.signUp = async (request, response, next) => {
         }
     
         var { firstName ,lastName, email, password, phone } = request.body;
+
     
         if(!email) {
             return response.status(400).json({error: "Email not present"});
@@ -28,11 +29,14 @@ exports.signUp = async (request, response, next) => {
         }
     
         else {
+            
+            var hash = await hashPassword(password);
+
             let createdUser = {
                 firstName: firstName,
                 lastName: lastName,
                 email: email,
-                password: password,
+                password: hash,
                 phone: phone,
                 created_date: new Date(),
                 modified_date: new Date()
