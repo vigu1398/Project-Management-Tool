@@ -8,7 +8,7 @@ services:
             - mongo
         ports:
             - 3000:3000
-            - 9230:9229
+            - 9229:9229
         volumes:
             - ./backend:/app
         environment: 

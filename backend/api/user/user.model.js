@@ -4,7 +4,8 @@ var Schema = mongoose.Schema;
 var user = new Schema({
     
     firstName: {
-        type: String
+        type: String,
+        required: true
     },
 
     lastName: {
@@ -29,7 +30,8 @@ var user = new Schema({
     },
     
     password: {
-        type: String
+        type: String,
+        required: true
     },
     
     created_date: {
