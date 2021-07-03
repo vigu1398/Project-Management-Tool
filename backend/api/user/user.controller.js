@@ -1,4 +1,4 @@
-const users = require('./user.model');
+const { validatePassword } = require('../../util/password.util');
 const user = require('./user.model');
 
 exports.signUp = async (request, response, next) => {
@@ -14,9 +14,15 @@ exports.signUp = async (request, response, next) => {
         if(!email) {
             return response.status(400).json({error: "Email not present"});
         }
-    
+
+        // Password Validation.
+        var passwordViolations = validatePassword(password);
+        if(passwordViolations.length) {
+            return response.status(400).json({error: "Password too weak", violations: passwordViolations});
+        }
+
+        // To check if the user already exists.
         var existingUser = await user.findOne({email: email});
-    
         if(existingUser) {
             return response.status(400).json({error: "A user with this email already exists"});
         }
@@ -32,7 +38,7 @@ exports.signUp = async (request, response, next) => {
                 modified_date: new Date()
             };
 
-            var newUser = new users(createdUser);
+            var newUser = new user(createdUser);
             await newUser.save();
 
             return response.status(200).json({description: "A new user has been created"});
