@@ -91,5 +91,37 @@ exports.signIn = async (request, response, next) => {
     catch(error) {
         return response.status(400).json({error: error.message});
     }    
-    
+
 } 
+
+exports.modifyUser = async (request, response, next) => {
+    try {
+        if(!request.body) {
+            return response.status(400).json({error: "Request body is missing for modify."});
+        }
+    
+        var { email, password, firstName, lastName, phone } = request.body;
+        if(!email) {
+            return response.status(400).json({error: "Email is undefined for modify."});
+        }
+
+        const existingUser = await user.findOne({ email: email });
+        if(!existingUser) {
+            return response.status(400).json({error: "User with this email is not found for modify."});
+        }
+
+        //To actually modify the user.
+        existingUser.email = email ? email : existingUser.email;
+        existingUser.phone = phone ? phone : existingUser.phone;
+        existingUser.firstName = firstName ? firstName : existingUser.firstName;
+        existingUser.lastName = lastName ? lastName : existingUser.lastName;
+        existingUser.password = password ? await hashPassword(password) : existingUser.password;
+        await existingUser.save();
+
+        return response.status(200).json({description: "User modified successfully."});
+    }
+    catch(error) {
+        return response.status(400).json({error: error.message});
+    }
+
+}
