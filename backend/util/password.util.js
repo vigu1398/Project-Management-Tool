@@ -29,6 +29,16 @@ exports.hashPassword = async (password) => {
     }
 }
 
+exports.verifyPassword = async (password, hash) => {
+    try {
+        var isValidPassword = bpcrypt.compare(password, hash);
+        return isValidPassword;
+    }
+    catch(error) {
+        return error;
+    }
+}
+
 
  
 
