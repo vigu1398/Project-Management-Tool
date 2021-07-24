@@ -1,7 +1,8 @@
 var createError = require('http-errors');
 var express = require('express');
 const mongoose = require('mongoose');
-var bodyParser = require('body-parser')
+var bodyParser = require('body-parser');
+var cors = require('cors');
 
 const { config } = require('./config');
 const router = require('./routes/routes');
@@ -12,6 +13,7 @@ var app = express();
 app.use(bodyParser({extended: false}));
 app.use(bodyParser.json());
 app.use('/', router);
+app.use(cors(config.corsOptions));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
