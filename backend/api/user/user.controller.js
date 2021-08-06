@@ -1,4 +1,5 @@
 const { validatePassword, hashPassword, verifyPassword } = require('../../util/password.util');
+const { validateForm } = require('../../util/validator.util');
 const user = require('./user.model');
 
 exports.signUp = async (request, response, next) => {
@@ -14,6 +15,12 @@ exports.signUp = async (request, response, next) => {
     
         if(!email) {
             return response.status(400).json({error: "Email not present"});
+        }
+
+        // Email and Phone number validation
+        const error = validateForm(phone, email);
+        if(error) {
+            throw error;
         }
 
         // Password Validation.

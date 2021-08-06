@@ -18,7 +18,8 @@
     "jade": "~1.11.0",
     "mongoose": "^5.12.15",
     "morgan": "~1.9.1",
-    "password-validator": "^5.1.1"
+    "password-validator": "^5.1.1",
+    "validator": "^13.6.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.7"
