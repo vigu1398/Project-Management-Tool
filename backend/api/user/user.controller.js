@@ -1,6 +1,9 @@
+const { createCompanyInsertObject } = require('../../helper/company.helper');
 const { validatePassword, hashPassword, verifyPassword } = require('../../util/password.util');
 const { validateForm } = require('../../util/validator.util');
+
 const user = require('./user.model');
+const company = require('../../models/company.model');
 
 exports.signUp = async (request, response, next) => {
 
@@ -102,19 +105,22 @@ exports.signIn = async (request, response, next) => {
 } 
 
 exports.modifyUser = async (request, response, next) => {
+
     try {
         if(!request.body) {
-            return response.status(400).json({error: "Request body is missing for modify."});
+            throw new Error("Request body is missing for modify.");
         }
     
-        var { email, password, firstName, lastName, phone } = request.body;
+        var { email, password, firstName, lastName, phone } = request.body.userDetails;
+        var { role } = request.body.companyDetails;
+        
         if(!email) {
-            return response.status(400).json({error: "Email is undefined for modify."});
+            throw new Error("Email is undefined for modify.");
         }
 
         const existingUser = await user.findOne({ email: email });
         if(!existingUser) {
-            return response.status(400).json({error: "User with this email is not found for modify."});
+            throw new Error("User with this email is not found");
         }
 
         //To actually modify the user.
@@ -123,9 +129,20 @@ exports.modifyUser = async (request, response, next) => {
         existingUser.firstName = firstName ? firstName : existingUser.firstName;
         existingUser.lastName = lastName ? lastName : existingUser.lastName;
         existingUser.password = password ? await hashPassword(password) : existingUser.password;
+        existingUser.role = role ? role : (existingUser.role || "");
+
+        if(request.body && request.body.companyDetails && request.body.companyDetails.name && !existingUser.companyId) {
+            var companyInsertObject = createCompanyInsertObject(request.body.companyDetails);
+            var companyRecord = new company(companyInsertObject);
+            await companyRecord.save();
+
+            var companyId = companyRecord._id;
+            existingUser.companyId = companyId;
+        } 
+
         await existingUser.save();
 
-        return response.status(200).json({description: "User modified successfully."});
+        return response.status(200).json({ description: "User modified successfully." });
     }
     catch(error) {
         return response.status(400).json({error: error.message});

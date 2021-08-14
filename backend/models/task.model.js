@@ -34,7 +34,8 @@ var task = new Schema({
     },
 
     status: {
-        type: String
+        type: String,
+        enum: ["New", "In Progress", "Ready for test", "Closed"]
     },
 
     bugIds: [
