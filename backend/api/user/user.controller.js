@@ -71,19 +71,19 @@ exports.signIn = async (request, response, next) => {
     try {
 
         if(!request.body || (Object.keys(request.body)).length == 0) {
-            return response.status(400).json({error: "Request body is missing for sign in."});
+            throw new Error("Request body is missing.");
         }
     
         var { email, password } = request.body;
         
         if(!email || !password) {
-            return response.status(400).json({error: "Email or password missing for sign in."});
+            throw new Error("Email or password is missing.");
         }
     
         // To check if the user already exists.
         var existingUser = await user.findOne({email: email});
         if(!existingUser) {
-            return response.status(400).json({error: "A user with this email does not exist."});
+            throw new Error("A user is not present in this email address.");
         }
 
 
@@ -94,7 +94,7 @@ exports.signIn = async (request, response, next) => {
         }
     
         else {
-            return response.status(400).json({description: "Invalid Password"});
+            throw new Error("Invalid password");
         }
     }
 
@@ -107,6 +107,7 @@ exports.signIn = async (request, response, next) => {
 exports.modifyUser = async (request, response, next) => {
 
     try {
+
         if(!request.body) {
             throw new Error("Request body is missing for modify.");
         }
@@ -144,6 +145,7 @@ exports.modifyUser = async (request, response, next) => {
 
         return response.status(200).json({ description: "User modified successfully." });
     }
+
     catch(error) {
         return response.status(400).json({error: error.message});
     }
