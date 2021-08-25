@@ -13,7 +13,7 @@ exports.signUp = async (request, response, next) => {
             return response.status(400).json({error: "Request Body is not found or is empty"});
         }
     
-        var { firstName ,lastName, email, password, phone } = request.body;
+        var { firstName ,lastName, email, password, phone, role, companyName } = request.body;
 
     
         if(!email) {
@@ -48,11 +48,20 @@ exports.signUp = async (request, response, next) => {
                 email: email,
                 password: hash,
                 phone: phone,
+                role: role,
                 created_date: new Date(),
                 modified_date: new Date()
             };
 
+            let createdCompany = {
+                name: companyName
+            }
+
             var newUser = new user(createdUser);
+            var newCompany = new company(createdCompany);
+
+            await newCompany.save();
+            newUser.companyId = newCompany._id;
             await newUser.save();
 
             return response.status(200).json({description: "A new user has been created"});
@@ -61,6 +70,9 @@ exports.signUp = async (request, response, next) => {
     }
 
     catch(error) {
+        if(newCompany && newCompany._id) {
+            await company.deleteOne({ _id: newCompany._id });
+        }
         return response.status(417).json({error: error.message});
     }
     
