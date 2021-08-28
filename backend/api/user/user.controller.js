@@ -163,3 +163,18 @@ exports.modifyUser = async (request, response, next) => {
     }
 
 }
+
+exports.getAllUsers = async (request, response, next) => {
+    
+    try {
+        
+        let { companyId } = request.params;
+        let allUsers = await user.find({ companyId: companyId });
+        
+        return response.status(200).json(allUsers);
+    }
+
+    catch(error) {
+        return response.status(400).json({ error: error.message });
+    }
+}

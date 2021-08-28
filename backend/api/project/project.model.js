@@ -3,9 +3,18 @@ var Schema = mongoose.Schema;
 
 var project = new Schema({
     
-    projectName: {
+    name: {
         type: String,
         required: true
+    },
+
+    description: {
+        type: String
+    },
+
+    owner: {
+        ref: 'users',
+        type: Schema.Types.ObjectId
     },
 
     startDate: {
@@ -19,12 +28,14 @@ var project = new Schema({
 
     storyIds: [
         {
+            ref: 'stories',
             type: Schema.Types.ObjectId
         }
     ],
 
     userIds: [
         {
+            ref: 'users',
             type: Schema.Types.ObjectId
         }
     ]
