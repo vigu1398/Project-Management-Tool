@@ -1,4 +1,4 @@
-const { createProjectInsertObject } = require('../../helper/project.helper');
+const { createProjectInsertObject, modifyProjectObject } = require('../../helper/project.helper');
 
 const project = require('./project.model');
 const company = require('../../models/company.model'); 
@@ -39,5 +39,22 @@ exports.createProject = async (request, response, next) => {
 }
 
 exports.modifyProject = async (request, response, next) => {
-    return response.status(200).json({ description: "Modifed Project" });
+    try {   
+
+        var projectId = request.params.projectId;
+        let projectRecord = await project.findOne({ _id: projectId });
+        if(!projectRecord) {
+            throw new Error("Project not found");
+        }
+
+        projectRecord = modifyProjectObject(request.body || {}, projectRecord);
+        await projectRecord.save();
+
+        return response.status(200).json({ description: "Modifed project successfully" });
+
+    }
+
+    catch(error) {
+        return response.status(400).json({ error: error.message });
+    }
 }

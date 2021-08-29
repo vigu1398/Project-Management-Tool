@@ -9,3 +9,14 @@ exports.createProjectInsertObject = (body, owner) => {
     
     return insertBody;
 } 
+
+exports.modifyProjectObject = (body, record) => {
+    var { name, description, endDate } = body;
+
+    record.name = name ? name : record.name;
+    record.description = description ? description : record.description;
+    record.endDate = endDate ? endDate : record.endDate;
+
+    return record;
+
+}
