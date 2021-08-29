@@ -9,6 +9,7 @@ var company = new Schema({
 
     projectIds: [
         {
+            ref: 'projects',
             type: Schema.Types.ObjectId
         }
     ]

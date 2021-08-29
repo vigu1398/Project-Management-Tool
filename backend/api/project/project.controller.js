@@ -58,3 +58,20 @@ exports.modifyProject = async (request, response, next) => {
         return response.status(400).json({ error: error.message });
     }
 }
+
+// Get all projects of a company
+exports.getAllProjects = async (request, response, next) => {
+    try {
+        var companyId = request.params.companyId;
+        var companyRecord = await company.findOne({ _id: companyId })
+                                .populate({
+                                    path: 'projectIds'
+                                });
+
+        return response.status(200).json(companyRecord['projectIds']);
+    }
+
+    catch(error) {
+        return response.status(400).json({ error: error.message });
+    }
+}
