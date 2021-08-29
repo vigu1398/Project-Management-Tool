@@ -14,7 +14,8 @@ services:
         environment: 
             - MONGODB_URI=mongodb://mongo:27017/project_iam
             - IAM_BACKEND_PORT=3000
-
+            - ENV=dev
+            - LOGGER_LEVEL=info
     mongo: 
         image: mongo:4.4.4-bionic
         container_name: "project_iam_mongo"
