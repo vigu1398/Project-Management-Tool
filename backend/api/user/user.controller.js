@@ -102,7 +102,7 @@ exports.signIn = async (request, response, next) => {
         // Check if the user has entered the correct password.
         var isValidPassword = await verifyPassword(password, existingUser.password);
         if(isValidPassword) {
-            return response.status(200).json({description: "Logged in successfully"});
+            return response.status(200).json({ description: "Logged in successfully", companyId: existingUser.companyId });
         }
     
         else {

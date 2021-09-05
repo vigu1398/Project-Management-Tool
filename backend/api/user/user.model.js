@@ -13,6 +13,7 @@ var user = new Schema({
     },
 
     companyId: {
+        ref : 'companies',
         type: Schema.Types.ObjectId
     },
     
