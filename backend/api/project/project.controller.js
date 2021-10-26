@@ -65,7 +65,10 @@ exports.getAllProjects = async (request, response, next) => {
         var companyId = request.params.companyId;
         var companyRecord = await company.findOne({ _id: companyId })
                                 .populate({
-                                    path: 'projectIds'
+                                    path: 'projectIds',
+                                    populate: {
+                                        path: 'userIds'
+                                    }
                                 });
 
         return response.status(200).json(companyRecord['projectIds']);

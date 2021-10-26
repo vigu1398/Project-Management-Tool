@@ -169,7 +169,7 @@ exports.getAllUsers = async (request, response, next) => {
     try {
         
         let { companyId } = request.params;
-        let allUsers = await user.find({ companyId: companyId });
+        let allUsers = await user.find({ companyId: companyId }, { firstName: 1, email: 1, _id: 0 });
         
         return response.status(200).json(allUsers);
     }
