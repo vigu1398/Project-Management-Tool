@@ -58,10 +58,18 @@ exports.signUp = async (request, response, next) => {
             }
 
             var newUser = new user(createdUser);
-            var newCompany = new company(createdCompany);
+            
+            let companyRecord = await company.findOne({ name: companyName });
+            if(companyRecord) {
+                newUser.companyId = companyRecord._id;
+            }
 
-            await newCompany.save();
-            newUser.companyId = newCompany._id;
+            else {
+                var newCompany = new company(createdCompany);
+                await newCompany.save();
+                newUser.companyId = newCompany._id;
+            }
+
             await newUser.save();
 
             return response.status(200).json({description: "A new user has been created"});
@@ -102,7 +110,7 @@ exports.signIn = async (request, response, next) => {
         // Check if the user has entered the correct password.
         var isValidPassword = await verifyPassword(password, existingUser.password);
         if(isValidPassword) {
-            return response.status(200).json({ description: "Logged in successfully", companyId: existingUser.companyId });
+            return response.status(200).json({ description: "Logged in successfully", companyId: existingUser.companyId, userId: existingUser._id });
         }
     
         else {
@@ -145,12 +153,21 @@ exports.modifyUser = async (request, response, next) => {
         existingUser.role = role ? role : (existingUser.role || "");
 
         if(request.body && request.body.companyDetails && request.body.companyDetails.name && !existingUser.companyId) {
-            var companyInsertObject = createCompanyInsertObject(request.body.companyDetails);
-            var companyRecord = new company(companyInsertObject);
-            await companyRecord.save();
+            let { name }  =  request.body.companyDetails;
+            let companyRecord = await company.findOne({ name: name });
+            if(companyRecord) {
+                existingUser.companyId = companyRecord._id;
 
-            var companyId = companyRecord._id;
-            existingUser.companyId = companyId;
+            }
+
+            else {
+                var companyInsertObject = createCompanyInsertObject(request.body.companyDetails);
+                companyRecord = new company(companyInsertObject);
+                await companyRecord.save();
+    
+                var companyId = companyRecord._id;
+                existingUser.companyId = companyId;
+            }
         } 
 
         await existingUser.save();
@@ -169,7 +186,7 @@ exports.getAllUsers = async (request, response, next) => {
     try {
         
         let { companyId } = request.params;
-        let allUsers = await user.find({ companyId: companyId }, { firstName: 1, email: 1, _id: 0 });
+        let allUsers = await user.find({ companyId: companyId }, { firstName: 1, email: 1, _id: 1 });
         
         return response.status(200).json(allUsers);
     }
