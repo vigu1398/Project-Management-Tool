@@ -1,11 +1,13 @@
-exports.createProjectInsertObject = (body, owner) => {
+exports.createProjectInsertObject = (body) => {
     var insertBody = {};
-    var { name, description, endDate } = body;
+    let { name, description, privacy, userIds, owner } = body;
 
-    insertBody.name = name ? name : "";
-    insertBody.description = description ? description : "";
-    insertBody.endDate = endDate ? endDate : "";
+    insertBody.name = name;
+    insertBody.description = description;
     insertBody.owner = owner;
+    insertBody.privacy = privacy;
+    insertBody.userIds = userIds;
+    insertBody.startDate = new Date();
     
     return insertBody;
 } 

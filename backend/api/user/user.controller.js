@@ -1,6 +1,7 @@
 const { createCompanyInsertObject } = require('../../helper/company.helper');
 const { validatePassword, hashPassword, verifyPassword } = require('../../util/password.util');
 const { validateForm } = require('../../util/validator.util');
+const { transform } = require('../../helper/user.helper');
 
 const user = require('./user.model');
 const company = require('../../models/company.model');
@@ -186,9 +187,11 @@ exports.getAllUsers = async (request, response, next) => {
     try {
         
         let { companyId } = request.params;
-        let allUsers = await user.find({ companyId: companyId }, { firstName: 1, email: 1, _id: 1 });
+        let allUsers = await user.find({ companyId: companyId }, { firstName: 1, email: 1, _id: 1 })
+                            .lean();
         
-        return response.status(200).json(allUsers);
+        allUsers = transform(allUsers);
+        response.status(200).json(allUsers);
     }
 
     catch(error) {

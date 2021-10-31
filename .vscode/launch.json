@@ -4,9 +4,9 @@
     {
       "type": "node",
       "request": "attach",
-      "name": "Docker: Attach to Node",
+      "name": "Dashboard Debugger",
       "port": 9229,
-      "address": "localhost",
+      "address": "0.0.0.0",
       "localRoot": "${workspaceFolder}/backend/",
       "remoteRoot": "/app/",
       "protocol": "inspector",

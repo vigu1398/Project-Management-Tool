@@ -5,23 +5,15 @@ const company = require('../../models/company.model');
 
 exports.createProject = async (request, response, next) => {
     try {
-
         var { companyId } = request.params;
 
-        if(!request.headers.owner) {
-            throw new Error("Owner ID is not present in headers");
-        }
-
-        if(!request.body || (Object.keys(request.body)).length == 0) {
-            throw new Error("Request body is missing or is empty");
-        }
+        if(!request.body || (Object.keys(request.body)).length == 0) throw new Error("Request body is missing or is empty");
 
         let companyRecord = await company.findOne({_id: companyId });
-        if(!companyRecord) {
-            throw new Error("Company Record not found");
-        }
+        if(!companyRecord) throw new Error("Company Record not found");
+        
 
-        let projectInsertBody = createProjectInsertObject(request.body, request.headers.owner);
+        let projectInsertBody = createProjectInsertObject(request.body);
         let projectRecord = new project(projectInsertBody);
 
         await projectRecord.save();
@@ -59,6 +51,44 @@ exports.modifyProject = async (request, response, next) => {
     }
 }
 
+exports.projectDetails = async (request, response, next) => {
+    try {
+        let { companyId, projectId } = request.params;
+        let projectRecord = await project.findOne({ _id: projectId })
+                                .populate({
+                                    path: 'owner'
+                                });
+        if(!projectRecord) throw new Error("Project not found");
+        response.status(200).json(projectRecord);
+    }
+
+    catch(error) {
+        response.status(400).json({ error: error.message });
+    }
+}
+
+exports.deleteProject = async (request, response, next) => {
+    try {
+        let { companyId, projectId } = request.params;
+        let companyRecord = await company.findOne({ _id: companyId });
+        let projectRecord = await project.findOne({ _id: projectId });
+
+        if(!companyRecord) throw new Error("Company Record not found");
+        if(!projectRecord) throw new Error("Project record not found");
+        if(!companyRecord.projectIds.includes(projectId)) throw new Error("This company does not have this project")
+
+        await project.deleteOne({ _id: projectId });
+        companyRecord.projectIds = _.filter((companyRecord.projectIds), (id) => { id != projectIds } );
+        await companyRecord.save();
+
+        return response.status(200).json({ description: "Deleted project" });
+    }
+
+    catch(error) {  
+        return response.status(400).json({ error: error.message });
+    }
+}
+
 // Get all projects of a company
 exports.getAllProjects = async (request, response, next) => {
     try {
@@ -67,7 +97,7 @@ exports.getAllProjects = async (request, response, next) => {
                                 .populate({
                                     path: 'projectIds',
                                     populate: {
-                                        path: 'userIds'
+                                        path: 'owner'
                                     }
                                 });
 

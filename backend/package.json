@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "dev": "nodemon --inspect=0.0.0.0:9229 --legacy-watch"
+    "dev": "nodemon --inspect=0.0.0.0:9229  --watchAll --runInBand --verbose"
   },
   "dependencies": {
     "argon2": "^0.28.2",
@@ -16,6 +16,7 @@
     "express": "~4.16.1",
     "http-errors": "~1.6.3",
     "jade": "~1.11.0",
+    "lodash": "^4.17.21",
     "mongoose": "^5.12.15",
     "morgan": "~1.9.1",
     "password-validator": "^5.1.1",

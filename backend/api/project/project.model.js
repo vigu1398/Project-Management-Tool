@@ -14,7 +14,8 @@ var project = new Schema({
 
     owner: {
         ref: 'users',
-        type: Schema.Types.ObjectId
+        type: Schema.Types.ObjectId,
+        requried: true
     },
 
     startDate: {
