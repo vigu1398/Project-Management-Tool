@@ -1,4 +1,5 @@
 const { createProjectInsertObject, modifyProjectObject } = require('../../helper/project.helper');
+const _ = require('lodash');
 
 const project = require('./project.model');
 const company = require('../../models/company.model'); 
@@ -78,13 +79,14 @@ exports.deleteProject = async (request, response, next) => {
         if(!companyRecord.projectIds.includes(projectId)) throw new Error("This company does not have this project")
 
         await project.deleteOne({ _id: projectId });
-        companyRecord.projectIds = _.filter((companyRecord.projectIds), (id) => { id != projectIds } );
+        companyRecord.projectIds = _.map((companyRecord.projectIds), (id) => { return id != projectId } );
         await companyRecord.save();
 
         return response.status(200).json({ description: "Deleted project" });
     }
 
     catch(error) {  
+        console.log(error);
         return response.status(400).json({ error: error.message });
     }
 }

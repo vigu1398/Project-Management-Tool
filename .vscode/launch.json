@@ -6,7 +6,7 @@
       "request": "attach",
       "name": "Dashboard Debugger",
       "port": 9229,
-      "address": "0.0.0.0",
+      "address": "localhost",
       "localRoot": "${workspaceFolder}/backend/",
       "remoteRoot": "/app/",
       "protocol": "inspector",

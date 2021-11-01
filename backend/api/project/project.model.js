@@ -23,6 +23,16 @@ var project = new Schema({
         requried: true
     },
 
+    privacy: {
+        type: String,
+        required: true
+    },
+
+    viewType: {
+        type: String,
+        required: true
+    },
+
     endDate: {
         type: Date
     },
