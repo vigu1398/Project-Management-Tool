@@ -37,19 +37,15 @@ var project = new Schema({
         type: Date
     },
 
-    storyIds: [
-        {
-            ref: 'stories',
-            type: Schema.Types.ObjectId
-        }
-    ],
+    taskIds: [{
+        ref: 'tasks',
+        type: Schema.Types.ObjectId
+    }],
 
-    userIds: [
-        {
-            ref: 'users',
-            type: Schema.Types.ObjectId
-        }
-    ]
+    userIds: [{
+        ref: 'users',
+        type: Schema.Types.ObjectId
+    }]
 }); 
 
 const projects = new mongoose.model('projects', project);
