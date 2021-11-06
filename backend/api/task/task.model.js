@@ -41,6 +41,10 @@ var task = new Schema({
         type: String
     },
 
+    tags: {
+        type: String
+    },
+
     className: {
         type: String
     },
