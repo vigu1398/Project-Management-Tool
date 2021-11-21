@@ -110,3 +110,18 @@ exports.getAllProjects = async (request, response, next) => {
         return response.status(400).json({ error: error.message });
     }
 }
+
+exports.getAllProjectMembers = async (request, response, next) => {
+    try {
+        let { companyId, projectId } = request.params;
+        let projectRecord = await project.findOne({ _id: projectId })
+                                .populate({
+                                    path: 'userIds'
+                                })
+                                .lean();
+        return response.status(200).json(projectRecord['userIds']);
+    }
+    catch(error) {
+        return response.status(400).json({ error: error.message });
+    }
+}
