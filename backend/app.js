@@ -6,6 +6,7 @@ var cors = require('cors');
 
 const { config } = require('./config');
 const router = require('./routes/routes');
+const { logger } = require('./helper/logger');
 
 var app = express();
 
@@ -24,7 +25,7 @@ app.use(function(req, res, next) {
 (async () => {
   try {
     connection = await mongoose.connect(config.mongo.uri, { useNewUrlParser: true, useUnifiedTopology: true });
-    console.log('Succussfully connection to mongodb.. URL:' + config.mongo.uri)
+    logger.info('Successfully connection to mongodb.. URL:' + config.mongo.uri)
   }
   catch (error) {
     console.log(error)
